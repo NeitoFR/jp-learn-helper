@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yt-dlp
+  namespace: japan-stt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yt-dlp
+  template:
+    metadata:
+      labels:
+        app: yt-dlp
+    spec:
+      containers:
+        - name: yt-dlp
+          image: python:3.10-slim
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          volumeMounts:
+            - name: downloads
+              mountPath: /downloads
+          stdin: true
+          tty: true
+      volumes:
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: downloads-pvc
