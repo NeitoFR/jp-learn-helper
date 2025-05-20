@@ -19,3 +19,26 @@ services:
       - ./downloads:/downloads
     stdin_open: true
     tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+  
+  faster-whisper:
+    build:
+      context: ./faster-whisper
+      dockerfile: Dockerfile
+    volumes:
+      - ./downloads:/downloads
+    stdin_open: true
+    tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
