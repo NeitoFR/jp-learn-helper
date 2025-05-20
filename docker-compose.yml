@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  yt-dlp:
+    build:
+      context: ./yt-dlp
+      dockerfile: Dockerfile
+    volumes:
+      - ./downloads:/downloads
+    stdin_open: true
+    tty: true
+    # environment:
+    #   - YTDLP_OUTPUT_TEMPLATE=/downloads/%(title)s.%(ext)s
+    # command: --extract-audio --audio-format mp3
+
+  # whisper:
+  #   image: ghcr.io/ggerganov/whisper.cpp:latest
+  #   volumes:
+  #     - ./downloads:/downloads
+  #   command: --model base --output_dir /downloads --output_format txt
+
+volumes:
+  downloads:
+    driver: local 
