@@ -1,5 +1,20 @@
 FROM nvidia/cuda:12.9.0-cudnn-devel-ubuntu24.04
 
+RUN apt update && apt install -y \
+    python3.10 \
+    python3-pip \ 
+    git
+
+RUN python3 -m venv /venv \
+    /venv/bin/pip install --no-cache-dir git+https://github.com/openai/whisper.git 
+
+# Create a script to verify GPU and cuDNN availability
+# RUN echo '#!/bin/bash\npython3 -c "import torch; print(\"CUDA available:\", torch.cuda.is_available()); print(\"GPU count:\", torch.cuda.device_count()); print(\"GPU name:\", torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"No GPU\"); import ctypes; print(\"cuDNN version:\", ctypes.cdll.LoadLibrary(\"libcudnn.so.8\").cudnnGetVersion())"' > /verify_gpu.sh \
+#     && chmod +x /verify_gpu.sh
+
+# # Set entrypoint to verify GPU and then run bash
+# ENTRYPOINT ["/bin/bash", "-c", "/verify_gpu.sh && bash"]
+
 # # Set environment variables
 # ENV DEBIAN_FRONTEND=noninteractive
 # ENV PYTHONUNBUFFERED=1

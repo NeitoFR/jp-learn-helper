@@ -15,14 +15,14 @@ spec:
     spec:
       containers:
         - name: whisper
-          image: python:3.10-slim
+          image: nvidia/cuda:12.9.0-cudnn-devel-ubuntu24.04
           resources:
             requests:
               cpu: "500m"
               memory: "1Gi"
             limits:
-              cpu: "4"
-              memory: "8Gi"
+              cpu: "5"
+              memory: "16Gi"
           volumeMounts:
             - name: downloads
               mountPath: /downloads
