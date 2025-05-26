@@ -3,9 +3,9 @@ FROM nvidia/cuda:12.9.0-cudnn-devel-ubuntu24.04
 RUN apt update && apt install -y python3-full python3-pip git ffmpeg
 
 RUN python3 -m venv /venv
-    
 
 RUN /venv/bin/pip install --no-cache-dir git+https://github.com/openai/whisper.git faster-whisper
+
 
 # # Create a script to verify GPU and cuDNN availability
 # RUN echo '#!/bin/bash\npython3 -c "import torch; print(\"CUDA available:\", torch.cuda.is_available()); print(\"GPU count:\", torch.cuda.device_count()); print(\"GPU name:\", torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"No GPU\"); import ctypes; print(\"cuDNN version:\", ctypes.cdll.LoadLibrary(\"libcudnn.so.8\").cudnnGetVersion())"' > /verify_gpu.sh \

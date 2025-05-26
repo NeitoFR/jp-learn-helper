@@ -1,0 +1,29 @@
+FROM nvidia/cuda:12.9.0-cudnn-devel-ubuntu24.04
+
+RUN apt update && apt install -y python3-full python3-pip git ffmpeg
+
+RUN python3 -m venv /venv
+
+RUN /venv/bin/pip install nvidia-cublas-cu12 nvidia-cudnn-cu12 torch torchvision torchaudio 
+
+RUN /venv/bin/pip install --no-cache-dir git+https://github.com/openai/whisper.git faster-whisper
+
+# Set environment variables for CUDA and cuDNN
+ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
+
+# Create a script to download and preload Whisper models
+COPY download_models.sh /download_models.sh
+RUN chmod +x /download_models.sh
+
+# Create a script to verify GPU availability
+RUN echo '#!/bin/bash\npython3 -c "import torch; print(\"CUDA available:\", torch.cuda.is_available()); print(\"GPU count:\", torch.cuda.device_count()); print(\"GPU name:\", torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"No GPU\"); import ctypes; print(\"cuDNN version:\", ctypes.cdll.LoadLibrary(\"libcudnn.so.9\").cudnnGetVersion())"' > /verify_gpu.sh \
+    && chmod +x /verify_gpu.sh
+
+# Set working directory
+WORKDIR /downloads
+
+# Download models during build
+RUN /download_models.sh
+
+# Set entrypoint to verify GPU and then run bash
+ENTRYPOINT ["/bin/bash", "-c", "/verify_gpu.sh && bash"]

@@ -14,31 +14,15 @@ services:
   whisper:
     build:
       context: ./docker/whisper
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.gpu
     volumes:
       - ./downloads:/downloads
     stdin_open: true
     tty: true
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: all
-    #           capabilities: [gpu]
-
-  faster-whisper:
-    build:
-      context: ./docker/faster-whisper
-      dockerfile: Dockerfile
-    volumes:
-      - ./downloads:/downloads
-    stdin_open: true
-    tty: true
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: all
-    #           capabilities: [gpu]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
